@@ -1,0 +1,2 @@
+import type { MetadataRoute } from "next";import { siteConfig } from "@/lib/config";
+export default function sitemap():MetadataRoute.Sitemap{return ["/ar","/en","/ar/properties","/en/properties","/ar/about","/en/about","/ar/contact","/en/contact"].map(path=>({url:`${siteConfig.siteUrl}${path}`,lastModified:new Date()}));}

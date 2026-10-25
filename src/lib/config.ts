@@ -1,0 +1,2 @@
+export const siteConfig = { name: "Madar Properties", arabicName: "مدار العقارية", description: "A bilingual demonstration real estate discovery platform for Egypt and the Gulf.", email: "hello@madar-demo.test", phone: "+20 100 000 0000", whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "", siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000" };
+export function whatsappUrl(message: string) { const number = siteConfig.whatsapp.replace(/[^0-9]/g, ""); return number ? `https://wa.me/${number}?text=${encodeURIComponent(message)}` : null; }

@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Madar Properties
 
-## Getting Started
+A bilingual, database-backed portfolio demonstration for a premium real-estate discovery experience across Egypt and the Gulf. Listings are fictional demonstration data, not verified commercial inventory.
 
-First, run the development server:
+## Stack
+- Next.js App Router + React + strict TypeScript
+- Tailwind CSS v4 and Lucide icons
+- Prisma + SQLite for local development (PostgreSQL-compatible model design for production)
+- Zod server-side validation; signed JWT admin cookie using `jose`
+- Vitest for domain validation tests
 
+## Requirements
+Node.js 20+ and npm.
+
+## Install and run
 ```bash
+npm install
+cp .env.example .env
+npm run db:generate
+npm run db:push
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Open http://localhost:3000 (redirects to Arabic) or `/en`.
+
+## Environment
+Copy `.env.example`. Required for database access: `DATABASE_URL`. Required for admin: set long random `AUTH_SECRET`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`. No default production password is provided. `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_WHATSAPP_NUMBER` are optional.
+
+## Database
+```bash
+npm run db:push       # synchronize local SQLite schema
+npm run db:seed       # idempotently upsert 11 demo properties
+```
+For production, use PostgreSQL, update the Prisma datasource provider/URL, run a checked migration, and use a managed backup plan.
+
+## Quality commands
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Admin
+Visit `/admin/login`. The server checks the email/password against environment variables, then writes an HttpOnly, SameSite session cookie. `/admin`, property status changes, and inquiry status changes all re-check authorization on the server.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scope notes
+- Public inquiry forms persist to the local database; email, SMS, and WhatsApp delivery are not configured.
+- Image URLs are illustrative Unsplash-hosted imagery. Production deployments require licensed asset management.
+- The current admin area supports dashboard counts, publication/archival status updates, and inquiry workflow management. Full property creation/edit forms remain a next enhancement.
+- Deployment should add HTTPS, database backups, rate limiting/WAF, security headers, and secret rotation.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `docs/` for the implementation plan, architecture, tasks, and verification progress.

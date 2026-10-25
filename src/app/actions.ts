@@ -1,0 +1,5 @@
+"use server";
+import { db } from "@/lib/db";
+import { inquirySchema } from "@/lib/validations";
+export type InquiryState={ok:boolean;message:string};
+export async function createInquiry(_:InquiryState,form:FormData):Promise<InquiryState>{const raw=Object.fromEntries(form);const parsed=inquirySchema.safeParse(raw);if(!parsed.success)return {ok:false,message:parsed.error.issues[0]?.message||"Please check the form."};if(parsed.data.website)return {ok:true,message:"Thanks."};try{await db.inquiry.create({data:{propertyId:parsed.data.propertyId,name:parsed.data.name,phone:parsed.data.phone,email:parsed.data.email||null,subject:parsed.data.subject||null,message:parsed.data.message,preferredContactMethod:parsed.data.preferredContactMethod}});return {ok:true,message:"Your inquiry was saved."}}catch{return {ok:false,message:"We could not save your inquiry. Please try again."}}}

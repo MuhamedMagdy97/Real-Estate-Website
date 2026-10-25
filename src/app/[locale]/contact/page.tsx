@@ -1,0 +1,4 @@
+import { isLocale,type Locale,copy } from "@/lib/i18n";
+import { InquiryForm } from "@/components/inquiry-form";
+import { siteConfig } from "@/lib/config";
+export default async function Contact({params}:{params:Promise<{locale:string}>}){const {locale:raw}=await params;if(!isLocale(raw))return null;const locale=raw as Locale,t=copy[locale];return <section className="shell section"><p className="eyebrow">Demo contact details</p><h1 className="title mt-2 text-5xl">{t.contactPage}</h1><div className="mt-10 grid gap-10 lg:grid-cols-2"><div><p className="text-lg leading-8 text-[var(--muted)]">{t.contactText}</p><div className="mt-8 space-y-3 rounded-2xl bg-[#eeeade] p-6"><p><b>Email:</b> {siteConfig.email}</p><p><b>{locale==="ar"?"الهاتف":"Phone"}:</b> {siteConfig.phone}</p><p className="text-sm text-[var(--muted)]">{t.demo}</p></div></div><div className="card p-6"><InquiryForm locale={locale}/></div></div></section>}

@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Country {
+  EGYPT
+  SAUDI_ARABIA
+  UAE
+}
+enum Currency {
+  EGP
+  SAR
+  AED
+}
+enum ListingType {
+  SALE
+  RENT
+}
+enum PropertyType {
+  APARTMENT
+  VILLA
+  TOWNHOUSE
+  PENTHOUSE
+  COMMERCIAL
+  LAND
+}
+enum PropertyStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+enum ContactMethod {
+  PHONE
+  EMAIL
+  WHATSAPP
+}
+
+model Property {
+  id                String         @id @default(cuid())
+  slug              String         @unique
+  referenceNumber   String         @unique
+  titleAr           String
+  titleEn           String
+  descriptionAr     String
+  descriptionEn     String
+  country           Country
+  cityAr            String
+  cityEn            String
+  areaAr            String
+  areaEn            String
+  addressAr         String?
+  addressEn         String?
+  listingType       ListingType
+  propertyType      PropertyType
+  price             Int
+  currency          Currency
+  bedrooms          Int?
+  bathrooms         Int?
+  areaSqm           Int?
+  furnishingStatus  String?
+  completionStatus  String?
+  status            PropertyStatus @default(DRAFT)
+  isFeatured        Boolean        @default(false)
+  images            Json
+  amenitiesAr       Json
+  amenitiesEn       Json
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  inquiries         Inquiry[]
+
+  @@index([status, createdAt])
+  @@index([status, country, cityEn])
+  @@index([status, listingType, propertyType])
+  @@index([status, country, price])
+}
+
+model Inquiry {
+  id                     String        @id @default(cuid())
+  propertyId             String?
+  property               Property?     @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  name                   String
+  phone                  String
+  email                  String?
+  subject                String?
+  message                String
+  preferredContactMethod ContactMethod?
+  status                 InquiryStatus @default(NEW)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@index([propertyId])
+}
